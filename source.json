@@ -1,0 +1,17 @@
+{
+   "name":"HT Logan",
+   "age":23,
+   "girl_friend":null,
+   "friends":[
+      "A",
+      "B",
+      "C"
+   ],
+   "watch_anime_days":[
+      1,
+      2,
+      3,
+      4
+   ],
+   "learn_flutter_days": []
+}
