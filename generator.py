@@ -61,7 +61,13 @@ def handle_content(content, file_name):
 
 
 def snake_case_to_camel_case(content):
-  words = content.split('_')
+  result = ''
+  if(ord(content[0]) <= ord('Z')):
+    result = chr(ord(content[0])+32)
+    result += content[1:]
+  else:
+    result = test_str
+  words = result.split('_')
   return str(words[0] + ''.join(word.title() for word in words[1:]))
 
 
