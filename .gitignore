@@ -1,0 +1,6 @@
+*.dart
+*.json
+
+__pycache__
+
+/resources/*

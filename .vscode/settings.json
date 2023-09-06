@@ -4,5 +4,4 @@
     "editor.indentSize": "tabSize",
     "editor.defaultFormatter": "ms-python.autopep8"
   },
-  "python.formatting.provider": "none"
 }

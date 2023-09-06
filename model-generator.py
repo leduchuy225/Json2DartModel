@@ -1,6 +1,6 @@
 import sys
 import json
-from io import StringIO
+from share import *
 from pathlib import Path
 
 
@@ -30,9 +30,11 @@ def handle_content(content, file_name):
         buffer.write(
             f"final List? {snake_case_to_camel_case(x)}; //Set type for this field")
       elif type(json_object[x][0]) is str:
-        buffer.write(f"final List<String>? {snake_case_to_camel_case(x)};")
+        buffer.write(
+            f"final List<String>? {snake_case_to_camel_case(x)};")
       elif type(json_object[x][0]) is int:
-        buffer.write(f"final List<int>? {snake_case_to_camel_case(x)};")
+        buffer.write(
+            f"final List<int>? {snake_case_to_camel_case(x)};")
       else:
         buffer.write(
             f"final List? {snake_case_to_camel_case(x)}; //Set type for this field")
@@ -54,35 +56,11 @@ def handle_content(content, file_name):
       f"factory {class_name}.fromJson(Map<String, dynamic> json) => _${class_name}FromJson(json);")
   buffer.addLine()
 
-  buffer.write(f"Map<String, dynamic> toJson() => _${class_name}ToJson(this);")
+  buffer.write(
+      f"Map<String, dynamic> toJson() => _${class_name}ToJson(this);")
   buffer.write("}")
 
   return buffer.getvalue()
-
-
-def snake_case_to_camel_case(content):
-  result = ''
-  if(ord(content[0]) <= ord('Z')):
-    result = chr(ord(content[0])+32)
-    result += content[1:]
-  else:
-    result = test_str
-  words = result.split('_')
-  return str(words[0] + ''.join(word.title() for word in words[1:]))
-
-
-def snake_case_to_pascal_case(content):
-  words = content.split('_')
-  return str(''.join(word.capitalize() for word in words))
-
-
-class StringBuffer(StringIO):
-  def write(self, content):
-    super().write(content)
-    super().write('\n')
-
-  def addLine(self):
-    super().write('\n')
 
 
 if __name__ == "__main__":
@@ -93,7 +71,7 @@ if __name__ == "__main__":
     file_name = sys.argv[1]
 
   path = Path(argument)
-  parent_path = str(Path(path).parents[0])
+  parent_path = str(Path('resources', path).parents[0])
 
   file_content = open(path, "r").read()
   final_result = handle_content(file_content, file_name)
