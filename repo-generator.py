@@ -40,6 +40,7 @@ def generateService(filename):
 
   buffer.write(f"import 'package:dio/dio.dart';")
   buffer.write(f"import 'package:one_data/one_data.dart';")
+  buffer.write(f"import 'package:one_data/src/model/model_barrel.dart';")
   buffer.write(f"import 'package:retrofit/retrofit.dart';")
 
   buffer.addLine()
@@ -53,6 +54,21 @@ def generateService(filename):
       f'factory {class_name}(Dio dio, {{String baseUrl}}) = _{class_name};')
 
   buffer.addLine()
+
+  buffer.write(f"""
+  @POST('')
+  Future<HttpResponse<BaseResponse>> testPOST(@Body() Map<String, dynamic> map);
+  """)
+
+  buffer.write(f"""
+  @GET('')
+  Future<HttpResponse<BaseResponse>> testGETQuery(@Query('header') String header);
+  """)
+
+  buffer.write(f"""
+  @GET('')
+  Future<HttpResponse<BaseResponse>> testGETQueries(@Queries() Map<String, dynamic> queries);
+  """)
 
   buffer.write(f'static {class_name} create() {{')
   buffer.write(
@@ -86,6 +102,35 @@ def generateServiceApi(filename):
   return buffer.getvalue()
 
 
+def generateServiceLocator(filename):
+  name = snake_case_to_pascal_case(filename)
+
+  service = name + "Service"
+  serviceApi = name + "ServiceApi"
+  repository = name + "Repository"
+  storageRepository = name + "StorageRepository"
+
+  buffer = StringBuffer()
+
+  buffer.write(f"""
+  import 'service/{filename}/{filename}_repository.dart';
+  import 'service/{filename}/{filename}_repository_impl.dart';
+  import 'source/{filename}/{filename}_repository.dart';
+  import 'source/{filename}/{filename}_repository_impl.dart';
+  """)
+
+  buffer.write(f"""
+  Get.put<{repository}>(
+    {storageRepository}(
+      webApi: {serviceApi}(service: {service}.create()),
+    ),
+    permanent: true,
+  );
+  """)
+
+  return buffer.getvalue()
+
+
 if __name__ == "__main__":
   folder_name = 'hello_world'
 
@@ -115,3 +160,8 @@ if __name__ == "__main__":
   data = generateServiceApi(folder_name)
   write_file(os.path.join(
       parent_path, f'{folder_name}_service_api.dart'), data)
+
+  # Locator
+  data = generateServiceLocator(folder_name)
+  write_file(os.path.join(
+      parent_path, f'{folder_name}_service_locator.dart'), data)
