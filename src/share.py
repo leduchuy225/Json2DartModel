@@ -22,8 +22,9 @@ class StringBuffer(StringIO):
     super().write(content)
     super().write('\n')
 
-  def addLine(self):
-    super().write('\n')
+  def addLine(self, count=1):
+    for i in range(0, count):
+      super().write('\n')
 
   def writeInline(self, content):
     super().write(content)

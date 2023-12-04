@@ -11,15 +11,69 @@ parentCatalog = 'TraCuuCatalogArgs'
 
 
 def handle_content(content, f):
+  buffer = StringBuffer()
+
+  # CatalogTypeValue
+  for line in content:
+    data = line.strip().split(',')
+    className = data[0]
+
+    buffer.write(f"// case {parentType}.{className}:")
+    buffer.write(
+        f"// return CatalogTypeValue('', '', '', CatalogShowType.BOTTOM);")
+
+  buffer.addLine(2)
+
+  # Catalog_Service_Api
+  # Call function
   for line in content:
     data = line.strip().split(',')
     className = data[0]
     name = snake_case_to_pascal_case(className) + 'CatalogArgs'
 
-    buffer = StringBuffer()
+    buffer.write(f"// case {parentType}.{className}:")
+    buffer.writeInline(
+        f"// if (args is {name}) {{return _get{snake_case_to_pascal_case(className)}(")
+
+    for i in range(1, len(data)):
+      fieldName = data[i].split(' ')[1]
+      buffer.writeInline(f"{fieldName}: args.{fieldName},")
+
+    buffer.writeInline(');}')
+    buffer.addLine()
+
+  buffer.addLine(2)
+
+  # Catalog_Service_Api
+  # Implement function
+  for line in content:
+    data = line.strip().split(',')
+    className = data[0]
+
+    buffer.writeInline(
+        f"// Future<List<Catalog>> _get{snake_case_to_pascal_case(className)}(")
+
+    if len(data) > 1:
+      buffer.writeInline('{')
+    for i in range(1, len(data)):
+      fieldType = data[i].split(' ')[0]
+      fieldName = data[i].split(' ')[1]
+      buffer.writeInline(f"{fieldType}? {fieldName},")
+    if len(data) > 1:
+      buffer.writeInline('}')
+
+    buffer.writeInline(") async {}")
+    buffer.addLine()
+
+  buffer.addLine(2)
+
+  # Catalog Argument
+  for line in content:
+    data = line.strip().split(',')
+    className = data[0]
+    name = snake_case_to_pascal_case(className) + 'CatalogArgs'
 
     buffer.write(f"class {name} extends {parentCatalog} {{")
-    buffer.addLine()
 
     for i in range(1, len(data)):
       buffer.write(f"final {data[i]};")
@@ -60,11 +114,9 @@ def handle_content(content, f):
         ");}")
 
     buffer.write('}')
-
-    buffer.addLine()
     buffer.addLine()
 
-    f.write(buffer.getvalue())
+  f.write(buffer.getvalue())
 
 
 if __name__ == "__main__":
