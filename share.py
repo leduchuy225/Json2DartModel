@@ -2,13 +2,13 @@ from io import StringIO
 
 
 def snake_case_to_camel_case(content):
-  result = ''
-  if (ord(content[0]) <= ord('Z')):
-    result = chr(ord(content[0])+32)
-    result += content[1:]
+  words = content.split('_')
+  if words[0].isupper():
+    words[0] = words[0].lower()
   else:
-    result = content
-  words = result.split('_')
+    if (ord(words[0][0]) <= ord('Z')):
+      result = chr(ord(words[0][0])+32)
+      words[0] = result + words[0][1:]
   return str(words[0] + ''.join(word.title() for word in words[1:]))
 
 

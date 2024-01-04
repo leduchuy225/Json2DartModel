@@ -4,8 +4,12 @@ from share import *
 from pathlib import Path
 
 
-def handle_content(content):
+def handle_content(content, file_name):
   json_object = json.loads(content)
+
+  if type(json_object) is list:
+    json_object = json_object[0]
+
   buffer = StringBuffer()
 
   buffer.writeInline('{')
@@ -22,7 +26,7 @@ def handle_content(content):
 
   buffer.write('}')
 
-  buffer.write(f'final Map<String, dynamic> payload = {{')
+  buffer.write(f'final Map<String, dynamic> {file_name} = {{')
 
   for key in json_object:
     keyName = snake_case_to_camel_case(key)
@@ -34,7 +38,7 @@ def handle_content(content):
 
 if __name__ == "__main__":
   argument = './source.json'
-  file_name = 'hello_world'
+  file_name = 'payload'
 
   if len(sys.argv) == 2:
     file_name = sys.argv[1]
@@ -43,7 +47,7 @@ if __name__ == "__main__":
   parent_path = str(Path('resources', path).parents[0])
 
   file_content = open(path, "r").read()
-  final_result = handle_content(file_content)
+  final_result = handle_content(file_content, file_name)
 
   f = open(parent_path + f"/{file_name}.dart", "a")
   f.truncate(0)
