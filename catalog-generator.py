@@ -5,9 +5,11 @@ from pathlib import Path
 
 from share import StringBuffer, snake_case_to_pascal_case
 
+# CATALOG_TYPE,param_type1 param_name1, param_type1 param_name1
 
-parentType = 'TraCuuCatalogType'
-parentCatalog = 'TraCuuCatalogArgs'
+
+parentType = 'TienIchCatalogType'
+parentCatalog = 'TienIchCatalogArgs'
 
 
 def handle_content(content, f):
